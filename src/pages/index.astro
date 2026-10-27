@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout pageTitle="Inicio">
+  <section class="hero">
+    <h1>🔬 Sitio Oficial LASAID (V1)</h1>
+    <p>Laboratorio de Investigación, Desarrollo de Software y Formación de Talento Científico.</p>
+    <div class="actions">
+      <a href="/personas" class="btn">Conocer al Equipo</a>
+      <a href="/software" class="btn secondary">Sistemas Desarrollados</a>
+    </div>
+  </section>
+
+  <h2>Secciones del Laboratorio</h2>
+  <div class="grid-container">
+    <div class="box"><h3>👥 Personas</h3><p>Investigadores y estudiantes de licenciatura y posgrado.</p><a href="/personas">Ir a Personas →</a></div>
+    <div class="box"><h3>📘 Tesis</h3><p>Trabajos de investigación concluidos y en desarrollo.</p><a href="/tesis">Ir a Tesis →</a></div>
+    <div class="box"><h3>🚀 Proyectos</h3><p>Líneas aplicadas vinculadas con nuestro software.</p><a href="/proyectos">Ir a Proyectos →</a></div>
+  </div>
+</BaseLayout>
+
+<style>
+  .hero { background: #fff; border: 1px solid #e2e8f0; padding: 2.5rem; border-radius: 12px; margin-bottom: 2rem; }
+  .actions { display: flex; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  .btn { background: #0284c7; color: #fff; padding: 0.7rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+  .btn.secondary { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
+  .box { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.5rem; }
+  .box a { color: #0284c7; font-weight: 700; text-decoration: none; margin-top: auto; }
+</style>

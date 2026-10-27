@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThesisCard from '../components/ThesisCard.astro';
+import { getCollection } from 'astro:content';
+
+const theses = await getCollection('theses');
+---
+<BaseLayout pageTitle="Tesis">
+  <h1>Tesis Registradas</h1>
+  <div class="grid-container">
+    {theses.map((t) => (
+      <ThesisCard {...t.data} />
+    ))}
+  </div>
+</BaseLayout>

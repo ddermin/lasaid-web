@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SoftwareCard from '../components/SoftwareCard.astro';
+import { getCollection } from 'astro:content';
+
+const softwareList = await getCollection('software');
+---
+<BaseLayout pageTitle="Software">
+  <h1>Catálogo de Software</h1>
+  <div class="grid-container">
+    {softwareList.map((sw) => (
+      <SoftwareCard
+        {...sw.data}
+        slug={sw.id.replace(/\.md$/, '')}
+      />
+    ))}
+  </div>
+</BaseLayout>

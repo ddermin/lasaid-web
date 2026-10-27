@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ResearcherCard from '../components/ResearcherCard.astro';
+import StudentCard from '../components/StudentCard.astro';
+import { getCollection } from 'astro:content';
+
+const researchers = await getCollection('researchers');
+const students = await getCollection('students');
+---
+<BaseLayout pageTitle="Personas">
+  <h1>Directorio de Personas</h1>
+
+  <h2>Investigadores</h2>
+  <div class="grid-container">
+    {researchers.map((r) => (
+      <ResearcherCard
+        name={r.data.name}
+        role={r.data.role}
+        areas={r.data.areas}
+        slug={r.id.replace(/\.md$/, '')}
+      />
+    ))}
+  </div>
+
+  <h2>Estudiantes</h2>
+  <div class="grid-container">
+    {students.map((s) => (
+      <StudentCard
+        name={s.data.name}
+        level={s.data.level}
+        status={s.data.status}
+        director={s.data.director}
+        codirector={s.data.codirector}
+      />
+    ))}
+  </div>
+</BaseLayout>
