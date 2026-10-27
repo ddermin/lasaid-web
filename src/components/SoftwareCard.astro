@@ -1,0 +1,21 @@
+---
+const { name, description, image, website, repository, slug } = Astro.props;
+---
+<article class="card">
+  <img src={image} alt={name} class="thumb" />
+  <h3>💻 {name}</h3>
+  <p>{description}</p>
+  <div class="links">
+    <a href={website} target="_blank">🌐 Sitio web</a>
+    <a href={repository} target="_blank">📦 Repositorio</a>
+  </div>
+  <a href={`/software/${slug}`} class="detail-btn">Ver página del sistema →</a>
+</article>
+
+<style>
+  .card { background: #fff; border: 1px solid #bae6fd; padding: 1.25rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.6rem; }
+  .thumb { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
+  .links { display: flex; gap: 1rem; font-size: 0.85rem; }
+  .links a { color: #0284c7; text-decoration: none; font-weight: 600; }
+  .detail-btn { margin-top: auto; padding-top: 0.5rem; color: #0369a1; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+</style>

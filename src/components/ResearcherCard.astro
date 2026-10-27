@@ -1,0 +1,16 @@
+---
+const { name, role, areas, slug } = Astro.props;
+---
+<article class="card">
+  <h3>👨‍🔬 {name}</h3>
+  <p class="role">{role}</p>
+  <p><strong>Líneas:</strong> {areas.join(', ')}</p>
+  <a href={`/personas/${slug}`} class="btn-link">Ver perfil individual →</a>
+</article>
+
+<style>
+  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.5rem; }
+  .role { color: #0284c7; font-weight: 600; font-size: 0.9rem; }
+  .btn-link { margin-top: auto; padding-top: 0.5rem; color: #0369a1; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+  .btn-link:hover { text-decoration: underline; }
+</style>

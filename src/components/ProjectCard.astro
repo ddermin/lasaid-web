@@ -1,0 +1,13 @@
+---
+const { name, description, participants, relatedSoftware } = Astro.props;
+---
+<article class="card">
+  <h3>🚀 {name}</h3>
+  <p>{description}</p>
+  <p><strong>Participantes:</strong> {participants.join(', ')}</p>
+  {relatedSoftware && <p><strong>Software vinculado:</strong> {relatedSoftware}</p>}
+</article>
+
+<style>
+  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.5rem; }
+</style>

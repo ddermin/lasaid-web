@@ -1,0 +1,15 @@
+---
+const { title, student, director, codirector, year, status } = Astro.props;
+---
+<article class="card">
+  <h3>📘 {title}</h3>
+  <p><strong>Alumno:</strong> {student}</p>
+  <p><strong>Director:</strong> {director}</p>
+  {codirector && <p><strong>Codirector:</strong> {codirector}</p>}
+  <p><strong>Año:</strong> {year} • <strong>Estado:</strong> {status}</p>
+</article>
+
+<style>
+  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.4rem; }
+  h3 { font-size: 1.1rem; color: #0f172a; }
+</style>

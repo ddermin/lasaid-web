@@ -1,0 +1,15 @@
+---
+const { name, level, status, director, codirector } = Astro.props;
+---
+<article class="card">
+  <h3>👨‍🎓 {name}</h3>
+  <p><strong>Nivel:</strong> {level}</p>
+  <p><strong>Estado:</strong> <span class="badge">{status}</span></p>
+  <p><strong>Director:</strong> {director}</p>
+  {codirector && <p><strong>Codirector:</strong> {codirector}</p>}
+</article>
+
+<style>
+  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.4rem; }
+  .badge { background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; }
+</style>
