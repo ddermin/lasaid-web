@@ -1,0 +1,36 @@
+<nav class="nav-links">
+  <a href="/">Inicio</a>
+  <a href="/personas">Personas</a>
+  <a href="/tesis">Tesis</a>
+  <a href="/software">Software</a>
+  <a href="/proyectos">Proyectos</a>
+  <a href="/contacto">Contacto</a>
+</nav>
+
+<style>
+  .nav-links {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-links a:hover {
+    background: #e0f2fe;
+    color: #0284c7;
+  }
+  @media (max-width: 768px) {
+    .nav-links {
+      justify-content: center;
+      gap: 0.5rem;
+    }
+  }
+</style>
