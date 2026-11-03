@@ -1,0 +1,140 @@
+﻿---
+import Placeholder from './Placeholder.astro';
+
+const { work, studentMap = {}, projectMap = {}, softwareMap = {} } = Astro.props;
+const d = work.data;
+
+const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE');
+
+const levelLabel =
+  d.level === 'doctorate' ? 'Doctorado' : d.level === 'master' ? 'Maestría' : 'Licenciatura';
+const typeLabel = d.type === 'thesis' ? 'Tesis' : 'Proyecto modular';
+const statusLabel = d.status === 'active' ? 'En curso' : 'Concluido';
+
+const studentNames =
+  d.studentNames && d.studentNames.length > 0
+    ? d.studentNames
+    : d.students.map((s) => studentMap[s]?.name || s);
+
+const advisorLink = (name) => {
+  if (!name || isPending(name)) return null;
+  if (name.includes('Israel Román')) return { name, href: '/personas/israel-roman-godinez' };
+  if (name.includes('Sulema Torres')) return { name, href: '/personas/sulema-torres-ramos' };
+  return { name, href: null };
+};
+
+const adv = advisorLink(d.advisor);
+const coadv = advisorLink(d.coadvisor);
+
+const validStart = !isPending(d.startDate);
+const validEnd = !isPending(d.endDate);
+const periodText =
+  validStart && validEnd
+    ? `${d.startDate} — ${d.endDate}`
+    : validStart
+    ? `Inicio: ${d.startDate}`
+    : validEnd
+    ? d.endDate
+    : '';
+
+const relProject = d.project && !isPending(d.project) ? projectMap[d.project] : null;
+const relSoftware = d.relatedSoftware && !isPending(d.relatedSoftware) ? softwareMap[d.relatedSoftware] : null;
+---
+<article
+  class="work-card"
+  data-type={d.type}
+  data-level={d.level}
+  data-status={d.status}
+>
+  <div class="card-badges">
+    <span class={`type-badge ${d.type}`}>{typeLabel}</span>
+    <span class="level-badge">{levelLabel}</span>
+    <span class={`status-badge ${d.status}`}>{statusLabel}</span>
+  </div>
+
+  {!isPending(d.title) ? <h3>{d.title}</h3> : <Placeholder />}
+
+  <div class="details">
+    <p><strong>{studentNames.length > 1 ? 'Estudiantes:' : 'Estudiante:'}</strong> {studentNames.join(', ')}</p>
+    {!isPending(d.program) && <p><strong>Programa:</strong> {d.program}</p>}
+
+    {adv && (
+      <p>
+        <strong>{d.type === 'thesis' ? 'Director(a):' : 'Responsable académico:'}</strong>{' '}
+        {adv.href ? <a href={adv.href}>{adv.name}</a> : adv.name}
+      </p>
+    )}
+
+    {coadv && (
+      <p>
+        <strong>Codirector(a):</strong>{' '}
+        {coadv.href ? <a href={coadv.href}>{coadv.name}</a> : coadv.name}
+      </p>
+    )}
+
+    {periodText && <p><strong>Periodo:</strong> {periodText}</p>}
+
+    {relProject && (
+      <p>
+        <strong>Proyecto relacionado:</strong>{' '}
+        <a href={`/proyectos/${relProject.slug}`}>{relProject.title}</a>
+      </p>
+    )}
+
+    {relSoftware && (
+      <p>
+        <strong>Software relacionado:</strong>{' '}
+        <a href={`/software/${relSoftware.slug}`}>{relSoftware.name}</a>
+      </p>
+    )}
+  </div>
+
+  {!isPending(d.repository) && (
+    <div class="card-footer">
+      <a href={d.repository} target="_blank" rel="noopener noreferrer" class="riudg-btn">
+        Consultar tesis en el Repositorio Institucional UdeG →
+      </a>
+    </div>
+  )}
+</article>
+
+<style>
+  .work-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .card-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .type-badge, .level-badge, .status-badge {
+    font-size: 0.73rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+  }
+  .type-badge.thesis { background: #e0f2fe; color: #0369a1; }
+  .type-badge.modular-project { background: #f3e8ff; color: #6b21a8; }
+  .level-badge { background: #f1f5f9; color: #334155; }
+  .status-badge.active { background: #dcfce7; color: #166534; }
+  .status-badge.completed { background: #f1f5f9; color: #475569; }
+  h3 { font-size: 1.05rem; color: #0f172a; line-height: 1.38; margin: 0; }
+  .details { font-size: 0.88rem; color: #334155; display: flex; flex-direction: column; gap: 0.28rem; }
+  .details a { color: #0369a1; text-decoration: none; font-weight: 600; }
+  .details a:hover { text-decoration: underline; }
+  .card-footer { margin-top: auto; padding-top: 0.5rem; }
+  .riudg-btn {
+    display: inline-block;
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .riudg-btn:hover { background: #e0f2fe; }
+</style>

@@ -1,0 +1,15 @@
+﻿---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import ActivityCard from '../components/ActivityCard.astro';
+import { getCollection } from 'astro:content';
+
+const activities = await getCollection('activities');
+---
+<ContentLayout
+  pageTitle="Actividad reciente"
+  subtitle="LASAID participa en actividades de difusión científica, congresos, reuniones académicas, proyectos colaborativos y actividades relacionadas con la formación de estudiantes y la divulgación de la inteligencia artificial y la ciencia de datos."
+>
+  <div class="grid-3">
+    {activities.map((act) => <ActivityCard activity={act} />)}
+  </div>
+</ContentLayout>

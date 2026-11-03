@@ -1,0 +1,103 @@
+﻿---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import ResearcherCard from '../../components/ResearcherCard.astro';
+import AcademicWorkCard from '../../components/AcademicWorkCard.astro';
+import PublicationCard from '../../components/PublicationCard.astro';
+import SoftwareCard from '../../components/SoftwareCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.data.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const d = project.data;
+
+const allResearchers = await getCollection('researchers');
+const allStudents = await getCollection('students');
+const allWorks = await getCollection('academic-works');
+const allPublications = await getCollection('publications');
+const allSoftware = await getCollection('software');
+
+const studentMap = Object.fromEntries(allStudents.map((s) => [s.data.slug, s.data]));
+const softwareMap = Object.fromEntries(allSoftware.map((sw) => [sw.data.slug, sw.data]));
+
+const relResearchers = allResearchers.filter((r) => d.researchers.includes(r.data.slug));
+const relStudents = allStudents.filter((s) => d.students.includes(s.data.slug));
+const relWorks = allWorks.filter((w) => d.academicWorks.includes(w.data.slug) || w.data.project === d.slug);
+const relPubs = allPublications.filter((p) => d.publications.includes(p.data.slug) || p.data.relatedProjects.includes(d.slug));
+const relSoftware = allSoftware.filter((sw) => d.software.includes(sw.data.slug) || sw.data.project === d.slug);
+---
+<ContentLayout
+  pageTitle={d.title}
+  subtitle={d.shortDescription}
+  backHref="/proyectos"
+  backLabel="Volver a Proyectos"
+>
+  <div class="project-overview">
+    <p>{d.description}</p>
+    {relStudents.length > 0 && (
+      <p class="students-line">
+        <strong>Estudiantes vinculados ({relStudents.length}):</strong>{' '}
+        {relStudents.map((s) => s.data.name).join(', ')}
+      </p>
+    )}
+  </div>
+
+  {relResearchers.length > 0 && (
+    <section class="block">
+      <SectionHeader title="Investigadores participantes" />
+      <div class="grid-2">
+        {relResearchers.map((r) => <ResearcherCard researcher={r} />)}
+      </div>
+    </section>
+  )}
+
+  {relSoftware.length > 0 && (
+    <section class="block">
+      <SectionHeader title="Software y herramientas generadas" />
+      <div class="grid-3">
+        {relSoftware.map((sw) => <SoftwareCard software={sw} />)}
+      </div>
+    </section>
+  )}
+
+  {relPubs.length > 0 && (
+    <section class="block">
+      <SectionHeader title="Publicaciones relacionadas" />
+      <div class="stack">
+        {relPubs.map((pub) => <PublicationCard publication={pub} />)}
+      </div>
+    </section>
+  )}
+
+  {relWorks.length > 0 && (
+    <section class="block">
+      <SectionHeader title={`Trabajos académicos asociados (${relWorks.length})`} />
+      <div class="grid-2">
+        {relWorks.map((w) => <AcademicWorkCard work={w} studentMap={studentMap} softwareMap={softwareMap} />)}
+      </div>
+    </section>
+  )}
+</ContentLayout>
+
+<style>
+  .project-overview {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .students-line { font-size: 0.92rem; color: #334155; }
+  .block { margin-bottom: 2.75rem; }
+  .stack { display: flex; flex-direction: column; gap: 1rem; }
+</style>

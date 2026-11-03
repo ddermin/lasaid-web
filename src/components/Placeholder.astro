@@ -1,0 +1,18 @@
+﻿---
+const MOSTRAR_LEYENDA = false;
+const { label = "" } = Astro.props;
+---
+{MOSTRAR_LEYENDA && <span class="placeholder-badge" title="Información pendiente de actualización">{label || "Pendiente"}</span>}
+
+<style>
+  .placeholder-badge {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px dashed #cbd5e1;
+    font-size: 0.78rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-style: italic;
+  }
+</style>

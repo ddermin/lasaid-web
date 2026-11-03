@@ -1,13 +1,46 @@
----
-const { name, description, participants, relatedSoftware } = Astro.props;
+﻿---
+const { project } = Astro.props;
+const d = project.data;
 ---
 <article class="card">
-  <h3>🚀 {name}</h3>
-  <p>{description}</p>
-  <p><strong>Participantes:</strong> {participants.join(', ')}</p>
-  {relatedSoftware && <p><strong>Software vinculado:</strong> {relatedSoftware}</p>}
+  <div class="top">
+    <span class="badge">{d.status}</span>
+    <h3><a href={`/proyectos/${d.slug}`}>{d.title}</a></h3>
+  </div>
+  <p>{d.shortDescription}</p>
+  <div class="stats">
+    <span><strong>Investigadores:</strong> {d.researchers.length}</span>
+    <span>• <strong>Trabajos vinculados:</strong> {d.academicWorks.length}</span>
+    {d.publications.length > 0 && <span>• <strong>Publicaciones:</strong> {d.publications.length}</span>}
+  </div>
+  <a href={`/proyectos/${d.slug}`} class="detail-link">Explorar proyecto →</a>
 </article>
 
 <style>
-  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.5rem; }
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .badge {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.73rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.35rem;
+  }
+  h3 { font-size: 1.12rem; margin: 0; line-height: 1.35; }
+  h3 a { color: #0f172a; text-decoration: none; }
+  h3 a:hover { color: #0284c7; }
+  p { font-size: 0.92rem; color: #334155; }
+  .stats { font-size: 0.82rem; color: #475569; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .detail-link { margin-top: auto; padding-top: 0.4rem; color: #0369a1; font-weight: 700; font-size: 0.9rem; text-decoration: none; }
+  .detail-link:hover { text-decoration: underline; }
 </style>

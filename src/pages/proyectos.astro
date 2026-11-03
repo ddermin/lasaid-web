@@ -1,15 +1,15 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
+﻿---
+import ContentLayout from '../layouts/ContentLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
 const projects = await getCollection('projects');
 ---
-<BaseLayout pageTitle="Proyectos">
-  <h1>Proyectos de Investigación</h1>
-  <div class="grid-container">
-    {projects.map((p) => (
-      <ProjectCard {...p.data} />
-    ))}
+<ContentLayout
+  pageTitle="Proyectos de investigación"
+  subtitle="Los proyectos desarrollados en LASAID integran investigación científica, formación de estudiantes y desarrollo tecnológico. En ellos pueden participar investigadores y estudiantes y pueden producir tesis, proyectos modulares, publicaciones, conjuntos de datos y herramientas de software."
+>
+  <div class="grid-2">
+    {projects.map((p) => <ProjectCard project={p} />)}
   </div>
-</BaseLayout>
+</ContentLayout>

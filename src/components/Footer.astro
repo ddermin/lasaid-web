@@ -1,7 +1,19 @@
-<footer class="site-footer">
+﻿<footer class="site-footer">
   <div class="footer-container">
-    <p><strong>LASAID</strong> — Laboratorio de Sistemas, Algoritmos e Investigación de Datos</p>
-    <p class="sub">Versión V1 • Compilado con Astro y servido mediante Nginx</p>
+    <div class="footer-col">
+      <p class="footer-title">LASAID — Laboratorio de Adquisición de Señales y Análisis Inteligente de Datos</p>
+      <p class="footer-inst">Centro Universitario de Ciencias Exactas e Ingenierías (CUCEI), Universidad de Guadalajara</p>
+      <p class="footer-loc">Edificio M, planta alta, oficina 205 • Tel. +52 (33) 1378 5900, ext. 27791</p>
+    </div>
+    <div class="footer-links">
+      <a href="/investigacion">Investigación</a>
+      <a href="/personas">Personas</a>
+      <a href="/formacion">Formación</a>
+      <a href="/software">Software</a>
+      <a href="/proyectos">Proyectos</a>
+      <a href="/publicaciones">Publicaciones</a>
+      <a href="/contacto">Contacto</a>
+    </div>
   </div>
 </footer>
 
@@ -9,13 +21,31 @@
   .site-footer {
     background: #0f172a;
     color: #f8fafc;
-    padding: 2rem 1.5rem;
-    margin-top: 3rem;
-    text-align: center;
+    padding: 2.5rem 1.5rem;
+    margin-top: 4rem;
+    border-top: 1px solid #1e293b;
   }
-  .sub {
-    color: #94a3b8;
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
+  .footer-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem;
   }
+  .footer-title { font-weight: 700; font-size: 1rem; color: #ffffff; margin-bottom: 0.35rem; }
+  .footer-inst { color: #cbd5e1; font-size: 0.9rem; }
+  .footer-loc { color: #94a3b8; font-size: 0.85rem; margin-top: 0.25rem; }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.88rem;
+  }
+  .footer-links a:hover { color: #38bdf8; text-decoration: underline; }
 </style>

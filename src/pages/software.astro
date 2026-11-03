@@ -1,18 +1,15 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
+﻿---
+import ContentLayout from '../layouts/ContentLayout.astro';
 import SoftwareCard from '../components/SoftwareCard.astro';
 import { getCollection } from 'astro:content';
 
 const softwareList = await getCollection('software');
 ---
-<BaseLayout pageTitle="Software">
-  <h1>Catálogo de Software</h1>
-  <div class="grid-container">
-    {softwareList.map((sw) => (
-      <SoftwareCard
-        {...sw.data}
-        slug={sw.id.replace(/\.md$/, '')}
-      />
-    ))}
+<ContentLayout
+  pageTitle="Software y desarrollo tecnológico"
+  subtitle="El desarrollo tecnológico y de software constituye una actividad transversal en LASAID. Los resultados de investigación se materializan en herramientas computacionales, plataformas experimentales, sistemas de adquisición y procesamiento de datos y aplicaciones orientadas a resolver problemas específicos."
+>
+  <div class="grid-3">
+    {softwareList.map((sw) => <SoftwareCard software={sw} />)}
   </div>
-</BaseLayout>
+</ContentLayout>

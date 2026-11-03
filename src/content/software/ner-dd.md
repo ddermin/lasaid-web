@@ -1,8 +1,16 @@
 ---
 name: "NER-DD"
-description: "Plataforma de extracción de información y reconocimiento de entidades nombradas en documentos técnicos."
-image: "https://placehold.co/600x320/0284c7/ffffff?text=NER-DD"
-website: "https://lasaid.example.org/ner-dd"
-repository: "https://github.com/ddermin/astro-training"
+slug: "ner-dd"
+image: "/images/software/ner-dd.svg"
+shortDescription: "Sistema para reconocimiento de entidades nombradas y procesamiento de información biomédica."
+description: "Sistema para reconocimiento de entidades nombradas y procesamiento de información biomédica desarrollado en LASAID, vinculado con el etiquetado de fármacos y entidades en documentos relacionados con enfermedades."
+status: "Activo"
+technologies: ["PENDIENTE"]
+website: "PENDIENTE"
+repository: "PENDIENTE"
+publication: "PENDIENTE"
+project: "procesamiento-texto-clinico-biomedico"
+academicWork: "herramienta-ner-etiquetado-drogas"
+relatedStudents: ["jaime-monroy-vargas"]
+relatedResearchers: ["israel-roman-godinez"]
 ---
-NER-DD permite indexar grandes volúmenes documentales e identificar entidades clave automáticamente mediante modelos entrenados en LASAID.

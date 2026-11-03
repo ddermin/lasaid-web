@@ -1,34 +1,127 @@
----
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, render } from 'astro:content';
+﻿---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import AcademicWorkCard from '../../components/AcademicWorkCard.astro';
+import PublicationCard from '../../components/PublicationCard.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const researchers = await getCollection('researchers');
   return researchers.map((researcher) => ({
-    params: { slug: researcher.id.replace(/\.md$/, '') },
+    params: { slug: researcher.data.slug },
     props: { researcher },
   }));
 }
 
 const { researcher } = Astro.props;
-const { data } = researcher;
-const { Content } = await render(researcher);
+const d = researcher.data;
+
+const allProjects = await getCollection('projects');
+const allWorks = await getCollection('academic-works');
+const allPublications = await getCollection('publications');
+const allStudents = await getCollection('students');
+const allSoftware = await getCollection('software');
+
+const studentMap = Object.fromEntries(allStudents.map((s) => [s.data.slug, s.data]));
+const projectMap = Object.fromEntries(allProjects.map((p) => [p.data.slug, p.data]));
+const softwareMap = Object.fromEntries(allSoftware.map((sw) => [sw.data.slug, sw.data]));
+
+const relatedProjects = allProjects.filter((p) => p.data.researchers.includes(d.slug));
+const lastNameKey = d.slug.includes('israel') ? 'Israel Román' : 'Sulema Torres';
+const relatedWorks = allWorks.filter(
+  (w) => (w.data.advisor && w.data.advisor.includes(lastNameKey)) || (w.data.coadvisor && w.data.coadvisor.includes(lastNameKey))
+);
+const relatedPublications = allPublications.filter((pub) => pub.data.lasaidResearchers.includes(d.slug));
+
+const isPending = (v) => !v || String(v).toUpperCase().includes('PENDIENTE');
 ---
-<BaseLayout pageTitle={data.name}>
-  <a href="/personas" class="back">← Volver a Personas</a>
-  <article class="profile">
-    <h1>👨‍🔬 {data.name}</h1>
-    <p class="role">{data.role}</p>
-    <p><strong>Áreas de investigación:</strong> {data.areas.join(' • ')}</p>
-    {data.email && <p><strong>Contacto:</strong> {data.email}</p>}
-    <hr />
-    <Content />
-  </article>
-</BaseLayout>
+<ContentLayout
+  pageTitle={d.name}
+  subtitle={d.role}
+  backHref="/personas"
+  backLabel="Volver a Personas"
+>
+  <section class="profile-box">
+    <img src={d.photo} alt={`Fotografía de ${d.name}`} class="profile-img" />
+    <div class="profile-info">
+      <p class="affiliation"><strong>Adscripción:</strong> {d.department}</p>
+      <p class="bio">{d.shortBio}</p>
+      <div class="contact-links">
+        <p><strong>Correo:</strong> <a href={`mailto:${d.email}`}>{d.email}</a></p>
+        <p>
+          <strong>ORCID:</strong> {d.orcid}
+          {!isPending(d.orcidUrl) ? <a href={d.orcidUrl} target="_blank" rel="noopener noreferrer"> (Ver perfil)</a> : <Placeholder />}
+        </p>
+        {!isPending(d.googleScholar) ? (
+          <p><strong>Google Scholar:</strong> <a href={d.googleScholar} target="_blank" rel="noopener noreferrer">Consultar perfil ↗</a></p>
+        ) : (
+          <Placeholder />
+        )}
+        {!isPending(d.scopus) ? (
+          <p><strong>Scopus:</strong> <a href={d.scopus} target="_blank" rel="noopener noreferrer">Consultar perfil ↗</a></p>
+        ) : (
+          <Placeholder />
+        )}
+      </div>
+
+      <div class="areas">
+        <h3>Líneas de trabajo</h3>
+        <div class="area-tags">
+          {d.researchAreas.map((area) => <span class="tag">{area}</span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <SectionHeader title={`Proyectos relacionados (${relatedProjects.length})`} />
+    <div class="grid-2">
+      {relatedProjects.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+
+  <section class="block">
+    <SectionHeader title={`Publicaciones destacadas relacionadas (${relatedPublications.length})`} />
+    <div class="pubs-stack">
+      {relatedPublications.map((pub) => <PublicationCard publication={pub} />)}
+    </div>
+  </section>
+
+  <section class="block">
+    <SectionHeader title={`Trabajos académicos dirigidos y codirigidos (${relatedWorks.length})`} />
+    <div class="grid-2">
+      {relatedWorks.map((w) => (
+        <AcademicWorkCard work={w} studentMap={studentMap} projectMap={projectMap} softwareMap={softwareMap} />
+      ))}
+    </div>
+  </section>
+</ContentLayout>
 
 <style>
-  .back { display: inline-block; margin-bottom: 1rem; color: #0284c7; font-weight: 600; text-decoration: none; }
-  .profile { background: #fff; border: 1px solid #e2e8f0; padding: 2rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.6rem; }
-  .role { color: #0369a1; font-weight: 600; }
-  hr { border: 0; border-top: 1px solid #e2e8f0; margin: 0.75rem 0; }
+  .profile-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  .profile-img { width: 200px; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid #cbd5e1; }
+  .affiliation { color: #0369a1; font-size: 0.95rem; margin-bottom: 0.75rem; }
+  .bio { color: #1e293b; font-size: 0.98rem; margin-bottom: 1rem; }
+  .contact-links { font-size: 0.9rem; color: #334155; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.25rem; }
+  .contact-links a { color: #0284c7; text-decoration: none; font-weight: 600; }
+  .areas h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+  .area-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag { background: #f1f5f9; color: #334155; font-size: 0.84rem; padding: 0.3rem 0.65rem; border-radius: 6px; font-weight: 600; }
+  .block { margin-bottom: 3rem; }
+  .pubs-stack { display: flex; flex-direction: column; gap: 1rem; }
+  @media (max-width: 720px) {
+    .profile-box { grid-template-columns: 1fr; }
+    .profile-img { width: 140px; height: 140px; }
+  }
 </style>

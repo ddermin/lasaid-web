@@ -1,16 +1,71 @@
----
-const { name, role, areas, slug } = Astro.props;
+﻿---
+const { researcher } = Astro.props;
+const d = researcher.data;
 ---
 <article class="card">
-  <h3>👨‍🔬 {name}</h3>
-  <p class="role">{role}</p>
-  <p><strong>Líneas:</strong> {areas.join(', ')}</p>
-  <a href={`/personas/${slug}`} class="btn-link">Ver perfil individual →</a>
+  <div class="card-top">
+    <img src={d.photo} alt={`Fotografía de ${d.name}`} class="avatar" loading="lazy" />
+    <div>
+      <span class="role-badge">{d.role}</span>
+      <h3><a href={`/personas/${d.slug}`}>{d.name}</a></h3>
+      <p class="dept">{d.department}</p>
+    </div>
+  </div>
+  <p class="bio">{d.shortBio}</p>
+  <div class="meta">
+    <p><strong>Correo:</strong> <a href={`mailto:${d.email}`}>{d.email}</a></p>
+    {d.orcid && !d.orcid.includes('PENDIENTE') && <p><strong>ORCID:</strong> {d.orcid}</p>}
+  </div>
+  <a href={`/personas/${d.slug}`} class="profile-btn">Consultar perfil completo →</a>
 </article>
 
 <style>
-  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.5rem; }
-  .role { color: #0284c7; font-weight: 600; font-size: 0.9rem; }
-  .btn-link { margin-top: auto; padding-top: 0.5rem; color: #0369a1; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
-  .btn-link:hover { text-decoration: underline; }
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .card-top {
+    display: flex;
+    gap: 1.1rem;
+    align-items: center;
+  }
+  .avatar {
+    width: 78px;
+    height: 78px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #cbd5e1;
+    flex-shrink: 0;
+  }
+  .role-badge {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+  }
+  h3 { font-size: 1.2rem; margin: 0; }
+  h3 a { color: #0f172a; text-decoration: none; }
+  h3 a:hover { color: #0284c7; }
+  .dept { font-size: 0.85rem; color: #475569; margin-top: 0.2rem; }
+  .bio { font-size: 0.92rem; color: #334155; }
+  .meta { font-size: 0.88rem; color: #334155; display: flex; flex-direction: column; gap: 0.2rem; }
+  .meta a { color: #0369a1; text-decoration: none; }
+  .profile-btn {
+    margin-top: auto;
+    align-self: flex-start;
+    color: #0369a1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  .profile-btn:hover { text-decoration: underline; }
 </style>

@@ -1,37 +1,137 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
+﻿---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
 import ResearcherCard from '../components/ResearcherCard.astro';
 import StudentCard from '../components/StudentCard.astro';
 import { getCollection } from 'astro:content';
 
 const researchers = await getCollection('researchers');
 const students = await getCollection('students');
+const academicWorks = await getCollection('academic-works');
+
+const worksByStudent = {};
+for (const w of academicWorks) {
+  for (const sSlug of w.data.students) {
+    if (!worksByStudent[sSlug]) worksByStudent[sSlug] = [];
+    worksByStudent[sSlug].push(w);
+  }
+}
+
+const sortedStudents = [...students].sort((a, b) => {
+  const wa = worksByStudent[a.data.slug] || [];
+  const wb = worksByStudent[b.data.slug] || [];
+  const aActive = wa.some((w) => w.data.status === 'active') ? 0 : 1;
+  const bActive = wb.some((w) => w.data.status === 'active') ? 0 : 1;
+  if (aActive !== bActive) return aActive - bActive;
+  return a.data.name.localeCompare(b.data.name, 'es');
+});
 ---
-<BaseLayout pageTitle="Personas">
-  <h1>Directorio de Personas</h1>
+<ContentLayout
+  pageTitle="Personas"
+  subtitle="Investigadores, estudiantes activos de posgrado y egresados formados en LASAID. Cada estudiante se muestra en una tarjeta única que agrupa todas sus etapas académicas en el laboratorio."
+>
+  <section class="block">
+    <SectionHeader title="Investigadores de LASAID" />
+    <div class="grid-2">
+      {researchers.map((r) => <ResearcherCard researcher={r} />)}
+    </div>
+  </section>
 
-  <h2>Investigadores</h2>
-  <div class="grid-container">
-    {researchers.map((r) => (
-      <ResearcherCard
-        name={r.data.name}
-        role={r.data.role}
-        areas={r.data.areas}
-        slug={r.id.replace(/\.md$/, '')}
-      />
-    ))}
-  </div>
+  <section class="block">
+    <SectionHeader
+      title="Estudiantes y egresados"
+      subtitle="Filtra por estado o nivel académico. Los estudiantes con maestría concluida y doctorado en curso responden a ambos filtros."
+    />
 
-  <h2>Estudiantes</h2>
-  <div class="grid-container">
-    {students.map((s) => (
-      <StudentCard
-        name={s.data.name}
-        level={s.data.level}
-        status={s.data.status}
-        director={s.data.director}
-        codirector={s.data.codirector}
-      />
-    ))}
-  </div>
-</BaseLayout>
+    <div class="filters-bar" role="region" aria-label="Filtros de estudiantes">
+      <div class="filter-group">
+        <label for="status-filter">Estado:</label>
+        <select id="status-filter">
+          <option value="all">Todos ({sortedStudents.length})</option>
+          <option value="active">Estudiantes activos (En curso)</option>
+          <option value="completed">Egresados (Concluidos)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="level-filter">Nivel:</label>
+        <select id="level-filter">
+          <option value="all">Todos los niveles</option>
+          <option value="doctorate">Doctorado</option>
+          <option value="master">Maestría</option>
+          <option value="undergraduate">Licenciatura</option>
+        </select>
+      </div>
+      <span id="students-count" class="count-label">Mostrando {sortedStudents.length} personas</span>
+    </div>
+
+    <div class="grid-2" id="students-grid">
+      {sortedStudents.map((s) => (
+        <StudentCard student={s} works={worksByStudent[s.data.slug] || []} />
+      ))}
+    </div>
+  </section>
+</ContentLayout>
+
+<script>
+  const statusSelect = document.getElementById('status-filter') as HTMLSelectElement | null;
+  const levelSelect = document.getElementById('level-filter') as HTMLSelectElement | null;
+  const countLabel = document.getElementById('students-count');
+  const cards = document.querySelectorAll<HTMLElement>('#students-grid .student-card');
+
+  function applyStudentFilters() {
+    const statusVal = statusSelect?.value || 'all';
+    const levelVal = levelSelect?.value || 'all';
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const isAct = card.getAttribute('data-active') === 'true';
+      const isComp = card.getAttribute('data-completed') === 'true';
+      const levels = (card.getAttribute('data-levels') || '').split(',');
+
+      const matchStatus =
+        statusVal === 'all' ||
+        (statusVal === 'active' && isAct) ||
+        (statusVal === 'completed' && isComp);
+
+      const matchLevel = levelVal === 'all' || levels.includes(levelVal);
+
+      if (matchStatus && matchLevel) {
+        card.style.display = 'flex';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (countLabel) countLabel.textContent = `Mostrando ${visible} personas`;
+  }
+
+  statusSelect?.addEventListener('change', applyStudentFilters);
+  levelSelect?.addEventListener('change', applyStudentFilters);
+</script>
+
+<style>
+  .block { margin-bottom: 3rem; }
+  .filters-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+  }
+  .filter-group { display: flex; align-items: center; gap: 0.5rem; }
+  label { font-weight: 700; font-size: 0.88rem; color: #334155; }
+  select {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  .count-label { margin-left: auto; font-size: 0.86rem; font-weight: 600; color: #475569; }
+</style>

@@ -1,8 +1,16 @@
 ---
 name: "SignAPROS"
-description: "Herramienta avanzada para el filtrado, análisis y visualización de señales digitales en tiempo real."
-image: "https://placehold.co/600x320/0369a1/ffffff?text=SignAPROS"
-website: "https://lasaid.example.org/signapros"
-repository: "https://github.com/ddermin/astro-training"
+slug: "signapros"
+image: "/images/software/signapros.svg"
+shortDescription: "Plataforma integrada de hardware y software para adquisición, procesamiento y análisis de bioseñales."
+description: "Plataforma integrada de hardware y software para adquisición, procesamiento y análisis de bioseñales desarrollada en LASAID."
+status: "Activo"
+technologies: ["PENDIENTE"]
+website: "PENDIENTE"
+repository: "PENDIENTE"
+publication: "PENDIENTE"
+project: "adquisicion-analisis-biosenales"
+academicWork: "sistema-adquisicion-procesamiento-senales-biomedicas"
+relatedStudents: ["fernando-castro-galan", "carlos-said-silva-chacon"]
+relatedResearchers: ["sulema-torres-ramos", "israel-roman-godinez"]
 ---
-SignAPROS provee módulos interactivos para el preprocesamiento de señales y extracción de características espectrales.

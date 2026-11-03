@@ -1,15 +1,126 @@
+﻿---
+import Placeholder from './Placeholder.astro';
+
+const { student, works = [] } = Astro.props;
+const d = student.data;
+
+const levelOrder = { doctorate: 1, master: 2, undergraduate: 3 };
+const sortedWorks = [...works].sort((a, b) => (levelOrder[a.data.level] || 9) - (levelOrder[b.data.level] || 9));
+
+const hasActive = sortedWorks.some((w) => w.data.status === 'active');
+const hasCompleted = sortedWorks.some((w) => w.data.status === 'completed');
+const levels = [...new Set(sortedWorks.map((w) => w.data.level))].join(',');
+
+const levelLabel = (lvl) =>
+  lvl === 'doctorate' ? 'Doctorado' : lvl === 'master' ? 'Maestría' : 'Licenciatura';
+const typeLabel = (t) => (t === 'thesis' ? 'Tesis' : 'Proyecto modular');
+const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE');
 ---
-const { name, level, status, director, codirector } = Astro.props;
----
-<article class="card">
-  <h3>👨‍🎓 {name}</h3>
-  <p><strong>Nivel:</strong> {level}</p>
-  <p><strong>Estado:</strong> <span class="badge">{status}</span></p>
-  <p><strong>Director:</strong> {director}</p>
-  {codirector && <p><strong>Codirector:</strong> {codirector}</p>}
+<article
+  class="student-card"
+  data-active={hasActive ? "true" : "false"}
+  data-completed={hasCompleted ? "true" : "false"}
+  data-levels={levels}
+>
+  <div class="header">
+    <h3>{d.name}</h3>
+    <div class="badges">
+      {hasActive && <span class="badge active">En curso</span>}
+      {hasCompleted && <span class="badge completed">Egresado / Concluido</span>}
+    </div>
+  </div>
+
+  <div class="stages">
+    {sortedWorks.map((w) => {
+      const wd = w.data;
+      const validTitle = !isPending(wd.title);
+      const validAdvisor = !isPending(wd.advisor);
+      const validCoadvisor = !isPending(wd.coadvisor);
+      const validRepo = !isPending(wd.repository);
+      return (
+        <div class="stage-item">
+          <div class="stage-meta">
+            <strong>{levelLabel(wd.level)}</strong>
+            <span>• {typeLabel(wd.type)}</span>
+            {wd.program && !wd.program.includes(levelLabel(wd.level)) && <span>({wd.program})</span>}
+            <span class={`status-pill ${wd.status}`}>{wd.status === 'active' ? 'En curso' : 'Concluido'}</span>
+          </div>
+          {validTitle ? <p class="work-title">{wd.title}</p> : <Placeholder />}
+          <p class="advisors">
+            {validAdvisor && <span><strong>Dirección:</strong> {wd.advisor}</span>}
+            {validCoadvisor && <span> • <strong>Codirección:</strong> {wd.coadvisor}</span>}
+          </p>
+          {validRepo && (
+            <a href={wd.repository} target="_blank" rel="noopener noreferrer" class="repo-link">
+              Consultar en Repositorio Institucional UdeG →
+            </a>
+          )}
+        </div>
+      );
+    })}
+  </div>
 </article>
 
 <style>
-  .card { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.4rem; }
-  .badge { background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; }
+  .student-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  h3 { font-size: 1.05rem; color: #0f172a; margin: 0; }
+  .badges { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+  .badge.active { background: #dcfce7; color: #166534; }
+  .badge.completed { background: #e0f2fe; color: #0369a1; }
+  .stages { display: flex; flex-direction: column; gap: 0.65rem; }
+  .stage-item {
+    background: #f8fafc;
+    border-left: 3px solid #cbd5e1;
+    padding: 0.65rem 0.85rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.86rem;
+  }
+  .stage-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    color: #334155;
+    margin-bottom: 0.25rem;
+  }
+  .status-pill {
+    font-size: 0.7rem;
+    padding: 0.05rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .status-pill.active { background: #fef9c3; color: #854d0e; }
+  .status-pill.completed { background: #f1f5f9; color: #475569; }
+  .work-title { color: #0f172a; font-weight: 600; margin: 0.2rem 0; }
+  .advisors { color: #475569; font-size: 0.82rem; }
+  .repo-link {
+    display: inline-block;
+    margin-top: 0.3rem;
+    color: #0369a1;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.8rem;
+  }
+  .repo-link:hover { text-decoration: underline; }
 </style>

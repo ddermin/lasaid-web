@@ -1,0 +1,54 @@
+﻿---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PublicationCard from '../components/PublicationCard.astro';
+import { getCollection } from 'astro:content';
+
+const publications = await getCollection('publications');
+const featured = publications
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.publicationDate.localeCompare(a.data.publicationDate));
+---
+<ContentLayout
+  pageTitle="Publicaciones recientes destacadas"
+  subtitle="Selección de cinco publicaciones recientes representativas de las principales líneas de investigación de LASAID."
+>
+  <div class="pubs-list">
+    {featured.map((pub) => <PublicationCard publication={pub} />)}
+  </div>
+
+  <section class="academic-profiles">
+    <SectionHeader
+      title="Perfiles científicos externos"
+      subtitle="Consulta la producción científica completa de los investigadores de LASAID en plataformas de indexación académica."
+    />
+    <div class="grid-2">
+      <div class="profile-links-card">
+        <h3>Dr. Israel Román Godínez</h3>
+        <p>ORCID: 0000-0002-7404-8096</p>
+        <a href="/personas/israel-roman-godinez">Ver perfil en LASAID →</a>
+      </div>
+      <div class="profile-links-card">
+        <h3>Dra. Sulema Torres Ramos</h3>
+        <p>ORCID: 0000-0002-2677-7155</p>
+        <a href="/personas/sulema-torres-ramos">Ver perfil en LASAID →</a>
+      </div>
+    </div>
+  </section>
+</ContentLayout>
+
+<style>
+  .pubs-list { display: flex; flex-direction: column; gap: 1.15rem; margin-bottom: 3rem; }
+  .profile-links-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .profile-links-card h3 { font-size: 1.1rem; color: #0f172a; }
+  .profile-links-card p { font-size: 0.9rem; color: #475569; }
+  .profile-links-card a { color: #0369a1; font-weight: 700; text-decoration: none; font-size: 0.9rem; margin-top: 0.25rem; }
+</style>

@@ -1,0 +1,124 @@
+﻿---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import AcademicWorkCard from '../components/AcademicWorkCard.astro';
+import { getCollection } from 'astro:content';
+
+const academicWorks = await getCollection('academic-works');
+const students = await getCollection('students');
+const projects = await getCollection('projects');
+const software = await getCollection('software');
+
+const studentMap = Object.fromEntries(students.map((s) => [s.data.slug, s.data]));
+const projectMap = Object.fromEntries(projects.map((p) => [p.data.slug, p.data]));
+const softwareMap = Object.fromEntries(software.map((sw) => [sw.data.slug, sw.data]));
+
+const levelOrder = { doctorate: 1, master: 2, undergraduate: 3 };
+const sortedWorks = [...academicWorks].sort((a, b) => {
+  if (a.data.status !== b.data.status) return a.data.status === 'active' ? -1 : 1;
+  return (levelOrder[a.data.level] || 9) - (levelOrder[b.data.level] || 9);
+});
+---
+<ContentLayout
+  pageTitle="Formación y trabajos dirigidos"
+  subtitle="LASAID participa en la formación de estudiantes de licenciatura y posgrado mediante la dirección y codirección de tesis, proyectos modulares, proyectos de investigación y actividades de desarrollo tecnológico."
+>
+  <div class="filters-panel" role="region" aria-label="Filtros de trabajos académicos">
+    <div class="filter-item">
+      <label for="f-type">Tipo:</label>
+      <select id="f-type">
+        <option value="all">Todos (Tesis y Proyectos modulares)</option>
+        <option value="thesis">Tesis</option>
+        <option value="modular-project">Proyectos modulares</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label for="f-level">Nivel:</label>
+      <select id="f-level">
+        <option value="all">Todos los niveles</option>
+        <option value="doctorate">Doctorado</option>
+        <option value="master">Maestría</option>
+        <option value="undergraduate">Licenciatura</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label for="f-status">Estado:</label>
+      <select id="f-status">
+        <option value="all">Todos</option>
+        <option value="active">En curso</option>
+        <option value="completed">Concluidos</option>
+      </select>
+    </div>
+
+    <span id="works-counter" class="counter">Mostrando {sortedWorks.length} de {sortedWorks.length} trabajos</span>
+  </div>
+
+  <div class="grid-2" id="works-grid">
+    {sortedWorks.map((w) => (
+      <AcademicWorkCard
+        work={w}
+        studentMap={studentMap}
+        projectMap={projectMap}
+        softwareMap={softwareMap}
+      />
+    ))}
+  </div>
+</ContentLayout>
+
+<script>
+  const typeSel = document.getElementById('f-type') as HTMLSelectElement | null;
+  const levelSel = document.getElementById('f-level') as HTMLSelectElement | null;
+  const statusSel = document.getElementById('f-status') as HTMLSelectElement | null;
+  const counter = document.getElementById('works-counter');
+  const cards = document.querySelectorAll<HTMLElement>('#works-grid .work-card');
+  const total = cards.length;
+
+  function filterWorks() {
+    const t = typeSel?.value || 'all';
+    const l = levelSel?.value || 'all';
+    const s = statusSel?.value || 'all';
+    let shown = 0;
+
+    cards.forEach((card) => {
+      const ct = card.getAttribute('data-type');
+      const cl = card.getAttribute('data-level');
+      const cs = card.getAttribute('data-status');
+
+      const ok = (t === 'all' || ct === t) && (l === 'all' || cl === l) && (s === 'all' || cs === s);
+      card.style.display = ok ? 'flex' : 'none';
+      if (ok) shown++;
+    });
+
+    if (counter) counter.textContent = `Mostrando ${shown} de ${total} trabajos`;
+  }
+
+  typeSel?.addEventListener('change', filterWorks);
+  levelSel?.addEventListener('change', filterWorks);
+  statusSel?.addEventListener('change', filterWorks);
+</script>
+
+<style>
+  .filters-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.1rem 1.35rem;
+    margin-bottom: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+  }
+  .filter-item { display: flex; align-items: center; gap: 0.45rem; }
+  label { font-weight: 700; font-size: 0.88rem; color: #334155; }
+  select {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #f8fafc;
+    font-size: 0.9rem;
+    color: #0f172a;
+  }
+  .counter { margin-left: auto; font-size: 0.86rem; font-weight: 700; color: #0369a1; }
+</style>

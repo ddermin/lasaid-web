@@ -1,29 +1,217 @@
----
+﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ResearchLineCard from '../components/ResearchLineCard.astro';
+import ResearcherCard from '../components/ResearcherCard.astro';
+import SoftwareCard from '../components/SoftwareCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import PublicationCard from '../components/PublicationCard.astro';
+import ActivityCard from '../components/ActivityCard.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { getCollection } from 'astro:content';
+
+const researchers = await getCollection('researchers');
+const softwareList = await getCollection('software');
+const projects = await getCollection('projects');
+const academicWorks = await getCollection('academic-works');
+const activities = await getCollection('activities');
+const allPublications = await getCollection('publications');
+
+const featuredPublications = allPublications
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.publicationDate.localeCompare(a.data.publicationDate))
+  .slice(0, 5);
+
+const researchLines = [
+  {
+    title: "Inteligencia artificial, aprendizaje automático y ciencia de datos",
+    description: "Desarrollo y aplicación de métodos computacionales para clasificación, predicción, agrupamiento, reconocimiento de patrones, selección de características y extracción de conocimiento a partir de datos."
+  },
+  {
+    title: "Procesamiento de lenguaje natural",
+    description: "Desarrollo y aplicación de métodos para representación, análisis y extracción de información y conocimiento a partir de texto, con especial interés en información biomédica y clínica."
+  },
+  {
+    title: "Procesamiento de imágenes y visión por computadora",
+    description: "Desarrollo de métodos computacionales para segmentación, caracterización, clasificación y análisis de imágenes y video mediante técnicas de procesamiento digital, aprendizaje automático y aprendizaje profundo."
+  },
+  {
+    title: "Adquisición, procesamiento y análisis de señales y bioseñales",
+    description: "Adquisición y análisis computacional de señales, incluyendo EEG, EMG y EOG, así como extracción de características y aplicación de métodos de inteligencia artificial para su interpretación."
+  },
+  {
+    title: "Integración y análisis multimodal de datos",
+    description: "Integración de información procedente de diferentes modalidades —señales, imágenes, video, texto y datos estructurados— con el objetivo de desarrollar modelos capaces de representar y analizar problemas complejos."
+  }
+];
 ---
 <BaseLayout pageTitle="Inicio">
   <section class="hero">
-    <h1>🔬 Sitio Oficial LASAID (V1)</h1>
-    <p>Laboratorio de Investigación, Desarrollo de Software y Formación de Talento Científico.</p>
-    <div class="actions">
-      <a href="/personas" class="btn">Conocer al Equipo</a>
-      <a href="/software" class="btn secondary">Sistemas Desarrollados</a>
+    <span class="institution-tag">Centro Universitario de Ciencias Exactas e Ingenierías • Universidad de Guadalajara</span>
+    <h1>LASAID — Laboratorio de Adquisición de Señales y Análisis Inteligente de Datos</h1>
+    <p class="hero-lead">
+      El Laboratorio de Adquisición de Señales y Análisis Inteligente de Datos (LASAID) es un laboratorio de investigación del Centro Universitario de Ciencias Exactas e Ingenierías de la Universidad de Guadalajara, orientado a la generación de conocimiento científico y al desarrollo tecnológico mediante técnicas de inteligencia artificial, aprendizaje automático y ciencia de datos.
+    </p>
+    <p class="hero-sub">
+      Las actividades del laboratorio integran métodos para el procesamiento y análisis de señales, imágenes, video, texto y datos estructurados, con especial interés en ciencia de datos biomédicos e inteligencia artificial aplicada a la salud. LASAID participa además en la formación de estudiantes de licenciatura y posgrado mediante proyectos de investigación, tesis, proyectos modulares y actividades de desarrollo tecnológico.
+    </p>
+    <div class="hero-actions">
+      <a href="/investigacion" class="btn primary">Explorar líneas de investigación</a>
+      <a href="/proyectos" class="btn secondary">Proyectos de investigación</a>
+      <a href="/formacion" class="btn secondary">Formación y tesis ({academicWorks.length})</a>
     </div>
   </section>
 
-  <h2>Secciones del Laboratorio</h2>
-  <div class="grid-container">
-    <div class="box"><h3>👥 Personas</h3><p>Investigadores y estudiantes de licenciatura y posgrado.</p><a href="/personas">Ir a Personas →</a></div>
-    <div class="box"><h3>📘 Tesis</h3><p>Trabajos de investigación concluidos y en desarrollo.</p><a href="/tesis">Ir a Tesis →</a></div>
-    <div class="box"><h3>🚀 Proyectos</h3><p>Líneas aplicadas vinculadas con nuestro software.</p><a href="/proyectos">Ir a Proyectos →</a></div>
-  </div>
+  <section class="home-block">
+    <SectionHeader
+      title="Líneas de investigación"
+      subtitle="Adquisición, procesamiento, representación y análisis inteligente de datos biomédicos y multimodales."
+      href="/investigacion"
+      linkText="Ver líneas e infraestructura →"
+    />
+    <div class="grid-3">
+      {researchLines.map((line) => <ResearchLineCard {...line} />)}
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader
+      title="Desarrollo tecnológico y software"
+      subtitle="Herramientas computacionales, plataformas experimentales y sistemas de adquisición y procesamiento de datos."
+      href="/software"
+      linkText="Ver catálogo de software →"
+    />
+    <div class="grid-3">
+      {softwareList.map((sw) => <SoftwareCard software={sw} />)}
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader
+      title="Investigadores"
+      subtitle="Profesorado e investigadores responsables del laboratorio en CUCEI, Universidad de Guadalajara."
+      href="/personas"
+      linkText="Ver directorio de personas →"
+    />
+    <div class="grid-2">
+      {researchers.map((r) => <ResearcherCard researcher={r} />)}
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader
+      title="Formación de talento científico"
+      subtitle="Dirección y codirección de tesis de doctorado, maestría, licenciatura y proyectos modulares."
+      href="/formacion"
+      linkText="Explorar todos los trabajos dirigidos →"
+    />
+    <div class="formation-summary grid-3">
+      <div class="stat-box">
+        <span class="stat-num">{academicWorks.filter((w) => w.data.level === 'doctorate').length}</span>
+        <h3>Doctorado</h3>
+        <p>Estudiantes activos desarrollando investigación doctoral en inteligencia artificial y datos biomédicos.</p>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">{academicWorks.filter((w) => w.data.level === 'master').length}</span>
+        <h3>Maestría</h3>
+        <p>Tesis enfocadas en bioseñales, imágenes médicas, texto clínico y aprendizaje automático.</p>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">{academicWorks.filter((w) => w.data.level === 'undergraduate').length}</span>
+        <h3>Licenciatura</h3>
+        <p>Tesis y proyectos modulares en Ingeniería Informática e Ingeniería en Computación.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader
+      title="Proyectos destacados"
+      subtitle="Iniciativas que articulan investigación científica, formación de estudiantes y desarrollo de software."
+      href="/proyectos"
+      linkText="Ver todos los proyectos →"
+    />
+    <div class="grid-2">
+      {projects.slice(0, 4).map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader
+      title="Publicaciones recientes destacadas"
+      subtitle="Producción científica reciente seleccionada por impacto y pertinencia en las líneas del laboratorio."
+      href="/publicaciones"
+      linkText="Ver publicaciones y perfiles →"
+    />
+    <div class="pubs-list">
+      {featuredPublications.map((pub) => <PublicationCard publication={pub} />)}
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader
+      title="Actividad reciente"
+      subtitle="Difusión científica, congresos, reuniones académicas y actividades de formación."
+      href="/actividades"
+      linkText="Ver actividad reciente →"
+    />
+    <div class="grid-3">
+      {activities.map((act) => <ActivityCard activity={act} />)}
+    </div>
+  </section>
+
+  <section class="home-block">
+    <SectionHeader title="Contacto y ubicación" href="/contacto" linkText="Ir a Contacto →" />
+    <ContactBlock />
+  </section>
 </BaseLayout>
 
 <style>
-  .hero { background: #fff; border: 1px solid #e2e8f0; padding: 2.5rem; border-radius: 12px; margin-bottom: 2rem; }
-  .actions { display: flex; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap; }
-  .btn { background: #0284c7; color: #fff; padding: 0.7rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+  .hero {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 2.75rem 2.25rem;
+    margin-bottom: 3rem;
+  }
+  .institution-tag {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 6px;
+    margin-bottom: 0.85rem;
+  }
+  h1 { font-size: 2.15rem; color: #0f172a; line-height: 1.22; margin-bottom: 1rem; }
+  .hero-lead { font-size: 1.05rem; color: #1e293b; margin-bottom: 0.75rem; max-width: 940px; }
+  .hero-sub { font-size: 0.96rem; color: #475569; max-width: 940px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 1.6rem; }
+  .btn {
+    padding: 0.7rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+  }
+  .btn.primary { background: #0284c7; color: #ffffff; }
+  .btn.primary:hover { background: #0369a1; }
   .btn.secondary { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
-  .box { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.5rem; }
-  .box a { color: #0284c7; font-weight: 700; text-decoration: none; margin-top: auto; }
+  .btn.secondary:hover { background: #e2e8f0; }
+  .home-block { margin-bottom: 3.25rem; }
+  .stat-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .stat-num { font-size: 2rem; font-weight: 800; color: #0284c7; display: block; }
+  .stat-box h3 { font-size: 1.15rem; margin: 0.25rem 0 0.4rem; }
+  .stat-box p { font-size: 0.9rem; color: #475569; }
+  .pubs-list { display: flex; flex-direction: column; gap: 1rem; }
+  @media (max-width: 680px) {
+    .hero { padding: 1.6rem 1.25rem; }
+    h1 { font-size: 1.65rem; }
+  }
 </style>
