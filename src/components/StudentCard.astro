@@ -1,4 +1,4 @@
-﻿---
+---
 import Placeholder from './Placeholder.astro';
 
 const { student, works = [] } = Astro.props;
@@ -14,7 +14,9 @@ const levels = [...new Set(sortedWorks.map((w) => w.data.level))].join(',');
 const levelLabel = (lvl) =>
   lvl === 'doctorate' ? 'Doctorado' : lvl === 'master' ? 'Maestría' : 'Licenciatura';
 const typeLabel = (t) => (t === 'thesis' ? 'Tesis' : 'Proyecto modular');
-const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE');
+
+const isExplicitPending = (val) => typeof val === 'string' && val.toUpperCase().includes('PENDIENTE');
+const hasValidText = (val) => typeof val === 'string' && val.trim() !== '' && !isExplicitPending(val);
 ---
 <article
   class="student-card"
@@ -33,10 +35,6 @@ const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE
   <div class="stages">
     {sortedWorks.map((w) => {
       const wd = w.data;
-      const validTitle = !isPending(wd.title);
-      const validAdvisor = !isPending(wd.advisor);
-      const validCoadvisor = !isPending(wd.coadvisor);
-      const validRepo = !isPending(wd.repository);
       return (
         <div class="stage-item">
           <div class="stage-meta">
@@ -45,16 +43,34 @@ const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE
             {wd.program && !wd.program.includes(levelLabel(wd.level)) && <span>({wd.program})</span>}
             <span class={`status-pill ${wd.status}`}>{wd.status === 'active' ? 'En curso' : 'Concluido'}</span>
           </div>
-          {validTitle ? <p class="work-title">{wd.title}</p> : <Placeholder />}
+
+          {hasValidText(wd.title) ? (
+            <p class="work-title">{wd.title}</p>
+          ) : (
+            <p class="work-title"><strong>Título:</strong> <Placeholder/></p>
+          )}
+
           <p class="advisors">
-            {validAdvisor && <span><strong>Dirección:</strong> {wd.advisor}</span>}
-            {validCoadvisor && <span> • <strong>Codirección:</strong> {wd.coadvisor}</span>}
+            {hasValidText(wd.advisor) ? (
+              <span><strong>Dirección:</strong> {wd.advisor}</span>
+            ) : isExplicitPending(wd.advisor) ? (
+              <span><strong>Dirección:</strong> <Placeholder/></span>
+            ) : null}
+
+            {hasValidText(wd.coadvisor) ? (
+              <span> • <strong>Codirección:</strong> {wd.coadvisor}</span>
+            ) : isExplicitPending(wd.coadvisor) ? (
+              <span> • <strong>Codirección:</strong> <Placeholder/></span>
+            ) : null}
           </p>
-          {validRepo && (
+
+          {hasValidText(wd.repository) ? (
             <a href={wd.repository} target="_blank" rel="noopener noreferrer" class="repo-link">
               Consultar en Repositorio Institucional UdeG →
             </a>
-          )}
+          ) : isExplicitPending(wd.repository) ? (
+            <p class="advisors"><strong>Repositorio:</strong> <Placeholder/></p>
+          ) : null}
         </div>
       );
     })}
@@ -95,6 +111,9 @@ const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE
     padding: 0.65rem 0.85rem;
     border-radius: 0 6px 6px 0;
     font-size: 0.86rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
   .stage-meta {
     display: flex;
@@ -102,7 +121,6 @@ const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE
     gap: 0.35rem;
     align-items: center;
     color: #334155;
-    margin-bottom: 0.25rem;
   }
   .status-pill {
     font-size: 0.7rem;
@@ -112,11 +130,11 @@ const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE
   }
   .status-pill.active { background: #fef9c3; color: #854d0e; }
   .status-pill.completed { background: #f1f5f9; color: #475569; }
-  .work-title { color: #0f172a; font-weight: 600; margin: 0.2rem 0; }
+  .work-title { color: #0f172a; font-weight: 600; margin: 0.15rem 0; }
   .advisors { color: #475569; font-size: 0.82rem; }
   .repo-link {
     display: inline-block;
-    margin-top: 0.3rem;
+    margin-top: 0.2rem;
     color: #0369a1;
     font-weight: 600;
     text-decoration: none;

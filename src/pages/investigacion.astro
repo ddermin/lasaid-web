@@ -2,55 +2,28 @@
 import ContentLayout from '../layouts/ContentLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ResearchLineCard from '../components/ResearchLineCard.astro';
-
-const researchLines = [
-  {
-    title: "Inteligencia artificial, aprendizaje automático y ciencia de datos",
-    description: "Desarrollo y aplicación de métodos computacionales para clasificación, predicción, agrupamiento, reconocimiento de patrones, selección de características y extracción de conocimiento a partir de datos."
-  },
-  {
-    title: "Procesamiento de lenguaje natural",
-    description: "Desarrollo y aplicación de métodos para representación, análisis y extracción de información y conocimiento a partir de texto, con especial interés en información biomédica y clínica."
-  },
-  {
-    title: "Procesamiento de imágenes y visión por computadora",
-    description: "Desarrollo de métodos computacionales para segmentación, caracterización, clasificación y análisis de imágenes y video mediante técnicas de procesamiento digital, aprendizaje automático y aprendizaje profundo."
-  },
-  {
-    title: "Adquisición, procesamiento y análisis de señales y bioseñales",
-    description: "Adquisición y análisis computacional de señales, incluyendo EEG, EMG y EOG, así como extracción de características y aplicación de métodos de inteligencia artificial para su interpretación."
-  },
-  {
-    title: "Integración y análisis multimodal de datos",
-    description: "Integración de información procedente de diferentes modalidades —señales, imágenes, video, texto y datos estructurados— con el objetivo de desarrollar modelos capaces de representar y analizar problemas complejos."
-  }
-];
-
-const applicationAreas = [
-  "Ciencia de datos biomédicos",
-  "Inteligencia artificial aplicada a la salud",
-  "Análisis de bioseñales",
-  "Procesamiento de imágenes médicas",
-  "Análisis de video",
-  "Procesamiento de texto biomédico y clínico",
-  "Integración de datos multimodales"
-];
+import {
+  LAB_PRESENTATION,
+  RESEARCH_LINES,
+  APPLICATION_AREAS,
+  INFRASTRUCTURE_ITEMS,
+} from '../data/institutional';
 ---
 <ContentLayout
   pageTitle="Investigación"
-  subtitle="En LASAID desarrollamos investigación relacionada con la adquisición, procesamiento, representación y análisis inteligente de datos. Nuestro trabajo combina técnicas de inteligencia artificial, aprendizaje automático y ciencia de datos con métodos especializados para señales, imágenes, video, texto y datos estructurados."
+  subtitle={LAB_PRESENTATION.researchIntro}
 >
   <section class="block">
     <SectionHeader title="Líneas de investigación" />
     <div class="grid-2">
-      {researchLines.map((line) => <ResearchLineCard {...line} />)}
+      {RESEARCH_LINES.map((line) => <ResearchLineCard {...line} />)}
     </div>
   </section>
 
   <section class="block">
     <SectionHeader title="Áreas de aplicación" />
     <div class="tags-container">
-      {applicationAreas.map((area) => <span class="area-pill">{area}</span>)}
+      {APPLICATION_AREAS.map((area) => <span class="area-pill">{area}</span>)}
     </div>
   </section>
 
@@ -60,39 +33,14 @@ const applicationAreas = [
       subtitle="LASAID cuenta con infraestructura para cómputo científico, desarrollo de inteligencia artificial, adquisición experimental de señales y prototipado, utilizada tanto en proyectos de investigación como en formación de estudiantes."
     />
     <div class="grid-2">
-      <div class="infra-card">
-        <h3>Cómputo</h3>
-        <ul>
-          <li>Estaciones de trabajo con GPU</li>
-          <li>Recursos para aprendizaje automático</li>
-          <li>Procesamiento y análisis de datos</li>
-        </ul>
-      </div>
-      <div class="infra-card">
-        <h3>Adquisición de señales</h3>
-        <ul>
-          <li>EEG (Electroencefalografía)</li>
-          <li>EMG (Electromiografía)</li>
-          <li>EOG (Electrooculografía)</li>
-        </ul>
-      </div>
-      <div class="infra-card">
-        <h3>Software científico</h3>
-        <ul>
-          <li>Python y procesamiento científico</li>
-          <li>Aprendizaje automático y aprendizaje profundo</li>
-          <li>Análisis de señales e imágenes</li>
-          <li>Procesamiento de lenguaje natural</li>
-        </ul>
-      </div>
-      <div class="infra-card">
-        <h3>Prototipado</h3>
-        <ul>
-          <li>Desarrollo experimental</li>
-          <li>Impresión 3D</li>
-          <li>Construcción y prueba de prototipos</li>
-        </ul>
-      </div>
+      {INFRASTRUCTURE_ITEMS.map((block) => (
+        <div class="infra-card">
+          <h3>{block.title}</h3>
+          <ul>
+            {block.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      ))}
     </div>
   </section>
 </ContentLayout>

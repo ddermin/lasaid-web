@@ -1,9 +1,13 @@
-﻿<footer class="site-footer">
+---
+import { SITE_CONFIG, LAB_LOCATION } from '../data/institutional';
+---
+<footer class="site-footer">
   <div class="footer-container">
     <div class="footer-col">
-      <p class="footer-title">LASAID — Laboratorio de Adquisición de Señales y Análisis Inteligente de Datos</p>
-      <p class="footer-inst">Centro Universitario de Ciencias Exactas e Ingenierías (CUCEI), Universidad de Guadalajara</p>
-      <p class="footer-loc">Edificio M, planta alta, oficina 205 • Tel. +52 (33) 1378 5900, ext. 27791</p>
+      <p class="footer-title">{SITE_CONFIG.siteName} — {SITE_CONFIG.fullName}</p>
+      <p class="footer-loc">{LAB_LOCATION.street}</p>
+      <p class="footer-loc">{LAB_LOCATION.building} • {LAB_LOCATION.institution}</p>
+      <p class="footer-loc">Tel. {LAB_LOCATION.phone}</p>
     </div>
     <div class="footer-links">
       <a href="/investigacion">Investigación</a>
@@ -12,6 +16,7 @@
       <a href="/software">Software</a>
       <a href="/proyectos">Proyectos</a>
       <a href="/publicaciones">Publicaciones</a>
+      <a href="/actividades">Actividades</a>
       <a href="/contacto">Contacto</a>
     </div>
   </div>
@@ -34,9 +39,8 @@
     flex-wrap: wrap;
     gap: 2rem;
   }
-  .footer-title { font-weight: 700; font-size: 1rem; color: #ffffff; margin-bottom: 0.35rem; }
-  .footer-inst { color: #cbd5e1; font-size: 0.9rem; }
-  .footer-loc { color: #94a3b8; font-size: 0.85rem; margin-top: 0.25rem; }
+  .footer-title { font-weight: 700; font-size: 1rem; color: #ffffff; margin-bottom: 0.4rem; }
+  .footer-loc { color: #cbd5e1; font-size: 0.86rem; margin-top: 0.2rem; }
   .footer-links {
     display: flex;
     flex-wrap: wrap;

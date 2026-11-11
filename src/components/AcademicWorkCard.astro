@@ -1,10 +1,11 @@
-﻿---
+---
 import Placeholder from './Placeholder.astro';
 
 const { work, studentMap = {}, projectMap = {}, softwareMap = {} } = Astro.props;
 const d = work.data;
 
-const isPending = (val) => !val || String(val).toUpperCase().includes('PENDIENTE');
+const isExplicitPending = (val) => typeof val === 'string' && val.toUpperCase().includes('PENDIENTE');
+const hasValidText = (val) => typeof val === 'string' && val.trim() !== '' && !isExplicitPending(val);
 
 const levelLabel =
   d.level === 'doctorate' ? 'Doctorado' : d.level === 'master' ? 'Maestría' : 'Licenciatura';
@@ -17,7 +18,7 @@ const studentNames =
     : d.students.map((s) => studentMap[s]?.name || s);
 
 const advisorLink = (name) => {
-  if (!name || isPending(name)) return null;
+  if (!hasValidText(name)) return null;
   if (name.includes('Israel Román')) return { name, href: '/personas/israel-roman-godinez' };
   if (name.includes('Sulema Torres')) return { name, href: '/personas/sulema-torres-ramos' };
   return { name, href: null };
@@ -26,19 +27,13 @@ const advisorLink = (name) => {
 const adv = advisorLink(d.advisor);
 const coadv = advisorLink(d.coadvisor);
 
-const validStart = !isPending(d.startDate);
-const validEnd = !isPending(d.endDate);
-const periodText =
-  validStart && validEnd
-    ? `${d.startDate} — ${d.endDate}`
-    : validStart
-    ? `Inicio: ${d.startDate}`
-    : validEnd
-    ? d.endDate
-    : '';
+const validStart = hasValidText(d.startDate);
+const validEnd = hasValidText(d.endDate);
+const pendingStart = isExplicitPending(d.startDate);
+const pendingEnd = isExplicitPending(d.endDate);
 
-const relProject = d.project && !isPending(d.project) ? projectMap[d.project] : null;
-const relSoftware = d.relatedSoftware && !isPending(d.relatedSoftware) ? softwareMap[d.relatedSoftware] : null;
+const relProject = hasValidText(d.project) ? projectMap[d.project] : null;
+const relSoftware = hasValidText(d.relatedSoftware) ? softwareMap[d.relatedSoftware] : null;
 ---
 <article
   class="work-card"
@@ -52,27 +47,52 @@ const relSoftware = d.relatedSoftware && !isPending(d.relatedSoftware) ? softwar
     <span class={`status-badge ${d.status}`}>{statusLabel}</span>
   </div>
 
-  {!isPending(d.title) ? <h3>{d.title}</h3> : <Placeholder />}
+  {hasValidText(d.title) ? (
+    <h3>{d.title}</h3>
+  ) : (
+    <h3>Título: <Placeholder/></h3>
+  )}
 
   <div class="details">
     <p><strong>{studentNames.length > 1 ? 'Estudiantes:' : 'Estudiante:'}</strong> {studentNames.join(', ')}</p>
-    {!isPending(d.program) && <p><strong>Programa:</strong> {d.program}</p>}
+    {hasValidText(d.program) && <p><strong>Programa:</strong> {d.program}</p>}
 
-    {adv && (
+    {adv ? (
       <p>
         <strong>{d.type === 'thesis' ? 'Director(a):' : 'Responsable académico:'}</strong>{' '}
         {adv.href ? <a href={adv.href}>{adv.name}</a> : adv.name}
       </p>
-    )}
+    ) : isExplicitPending(d.advisor) ? (
+      <p><strong>{d.type === 'thesis' ? 'Director(a):' : 'Responsable académico:'}</strong> <Placeholder/></p>
+    ) : null}
 
-    {coadv && (
+    {coadv ? (
       <p>
         <strong>Codirector(a):</strong>{' '}
         {coadv.href ? <a href={coadv.href}>{coadv.name}</a> : coadv.name}
       </p>
-    )}
+    ) : isExplicitPending(d.coadvisor) ? (
+      <p><strong>Codirector(a):</strong> <Placeholder/></p>
+    ) : null}
 
-    {periodText && <p><strong>Periodo:</strong> {periodText}</p>}
+    <p>
+      <strong>Periodo:</strong>{' '}
+      {validStart && validEnd ? (
+        `${d.startDate} — ${d.endDate}`
+      ) : pendingStart && validEnd ? (
+        <>Inicio: <Placeholder/> — {d.endDate}</>
+      ) : validStart && pendingEnd ? (
+        <>{d.startDate} — <Placeholder/></>
+      ) : pendingStart && pendingEnd ? (
+        <Placeholder/>
+      ) : validStart ? (
+        `Inicio: ${d.startDate}`
+      ) : validEnd ? (
+        d.endDate
+      ) : (
+        <Placeholder/>
+      )}
+    </p>
 
     {relProject && (
       <p>
@@ -89,13 +109,17 @@ const relSoftware = d.relatedSoftware && !isPending(d.relatedSoftware) ? softwar
     )}
   </div>
 
-  {!isPending(d.repository) && (
+  {hasValidText(d.repository) ? (
     <div class="card-footer">
       <a href={d.repository} target="_blank" rel="noopener noreferrer" class="riudg-btn">
         Consultar tesis en el Repositorio Institucional UdeG →
       </a>
     </div>
-  )}
+  ) : isExplicitPending(d.repository) ? (
+    <div class="card-footer">
+      <p class="pending-repo"><strong>Repositorio institucional:</strong> <Placeholder/></p>
+    </div>
+  ) : null}
 </article>
 
 <style>
@@ -125,6 +149,7 @@ const relSoftware = d.relatedSoftware && !isPending(d.relatedSoftware) ? softwar
   .details a { color: #0369a1; text-decoration: none; font-weight: 600; }
   .details a:hover { text-decoration: underline; }
   .card-footer { margin-top: auto; padding-top: 0.5rem; }
+  .pending-repo { font-size: 0.84rem; color: #475569; }
   .riudg-btn {
     display: inline-block;
     background: #f0f9ff;

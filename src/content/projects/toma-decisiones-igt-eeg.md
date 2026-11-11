@@ -12,4 +12,5 @@ academicWorks: ["doctorado-manuel-chavez-sanchez", "maestria-manuel-chavez-sanch
 publications: ["behavioral-eeg-dataset-igt-2026", "gogamblergo-platform-2026"]
 software: ["gogamblergo"]
 repositories: ["PENDIENTE"]
+featured: true
 ---

@@ -12,4 +12,5 @@ academicWorks: []
 publications: ["isolation-muscle-activation-hd-semg-2026"]
 software: []
 repositories: ["PENDIENTE"]
+featured: false
 ---

@@ -12,4 +12,5 @@ academicWorks: ["cellanalyzer"]
 publications: []
 software: []
 repositories: ["PENDIENTE"]
+featured: false
 ---

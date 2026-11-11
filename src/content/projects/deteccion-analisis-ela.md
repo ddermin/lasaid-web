@@ -12,4 +12,5 @@ academicWorks: ["maestria-daniela-suarez-hernandez"]
 publications: ["rgb-video-screening-als-2026"]
 software: []
 repositories: ["PENDIENTE"]
+featured: true
 ---

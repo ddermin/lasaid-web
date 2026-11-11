@@ -1,4 +1,4 @@
-﻿---
+---
 import Placeholder from './Placeholder.astro';
 
 const { publication } = Astro.props;
@@ -7,21 +7,27 @@ const isPending = (v) => !v || String(v).toUpperCase().includes('PENDIENTE');
 const validVenue = !isPending(d.venue);
 const validDoi = !isPending(d.doi);
 const validUrl = !isPending(d.url);
-const externalHref = validUrl ? d.url : validDoi ? `https://doi.org/${d.doi}` : null;
+const externalHref = validUrl ? d.url : validDoi ? `[https://doi.org/$](https://doi.org/$){d.doi}` : null;
 ---
 <article class="pub-card">
   <div class="pub-meta">
     <span class="year">{d.year}</span>
-    {validVenue ? <span class="venue">{d.venue}</span> : <Placeholder />}
+    {validVenue ? (
+      <span class="venue">{d.venue}</span>
+    ) : (
+      <span class="venue-pending">Revista / Venue: <Placeholder/></span>
+    )}
   </div>
   <h3>{d.title}</h3>
-  {externalHref && (
-    <div class="pub-actions">
+  <div class="pub-actions">
+    {externalHref ? (
       <a href={externalHref} target="_blank" rel="noopener noreferrer" class="doi-link">
         {validDoi ? `DOI: ${d.doi} ↗` : 'Consultar publicación ↗'}
       </a>
-    </div>
-  )}
+    ) : (
+      <span class="doi-pending"><strong>DOI / Enlace:</strong> <Placeholder/></span>
+    )}
+  </div>
 </article>
 
 <style>
@@ -44,8 +50,9 @@ const externalHref = validUrl ? d.url : validDoi ? `https://doi.org/${d.doi}` : 
     border-radius: 4px;
   }
   .venue { color: #0369a1; font-weight: 700; font-size: 0.88rem; }
+  .venue-pending { font-size: 0.84rem; color: #475569; }
   h3 { font-size: 1.05rem; color: #0f172a; line-height: 1.4; margin: 0; }
-  .pub-actions { margin-top: 0.25rem; }
+  .pub-actions { margin-top: 0.25rem; font-size: 0.85rem; color: #475569; }
   .doi-link {
     display: inline-block;
     font-size: 0.85rem;

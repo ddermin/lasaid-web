@@ -1,10 +1,10 @@
 ---
-title: "Participación en congreso internacional IWBBIO 2026"
+title: "PENDIENTE"
 slug: "participacion-congreso-iwbbio-2026"
-date: "2026"
+date: "PENDIENTE"
 type: "conference"
-description: "Presentación de resultados de investigación sobre el aislamiento de zonas de activación muscular en señales HD-sEMG."
+description: "PENDIENTE"
 image: "/images/activities/activity-default.svg"
-relatedPeople: ["Dr. Israel Román Godínez", "Dra. Sulema Torres Ramos"]
+relatedPeople: ["PENDIENTE"]
 url: "PENDIENTE"
 ---

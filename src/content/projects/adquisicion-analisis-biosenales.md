@@ -12,4 +12,5 @@ academicWorks: ["doctorado-esteban-eusebio-martin", "maestria-esteban-eusebio-ma
 publications: []
 software: ["signapros"]
 repositories: ["PENDIENTE"]
+featured: true
 ---

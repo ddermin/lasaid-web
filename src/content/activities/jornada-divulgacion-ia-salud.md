@@ -1,10 +1,10 @@
 ---
-title: "Jornada de divulgación en ciencia de datos biomédicos e IA"
+title: "PENDIENTE"
 slug: "jornada-divulgacion-ia-salud"
 date: "PENDIENTE"
 type: "outreach"
-description: "Actividad de difusión científica sobre las aplicaciones del aprendizaje automático en bioseñales, imágenes médicas y texto clínico."
+description: "PENDIENTE"
 image: "/images/activities/activity-default.svg"
-relatedPeople: ["Dr. Israel Román Godínez", "Dra. Sulema Torres Ramos"]
+relatedPeople: ["PENDIENTE"]
 url: "PENDIENTE"
 ---

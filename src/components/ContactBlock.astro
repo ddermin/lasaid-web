@@ -1,27 +1,50 @@
-﻿---
+---
 import Placeholder from './Placeholder.astro';
-const { mapUrl = "PENDIENTE" } = Astro.props;
+import { SITE_CONFIG, LAB_LOCATION } from '../data/institutional';
+
+const { mapUrl = LAB_LOCATION.mapUrl } = Astro.props;
 const validMap = mapUrl && !mapUrl.toUpperCase().includes('PENDIENTE');
 ---
 <div class="contact-grid">
   <div class="contact-info">
-    <h3>Laboratorio de Adquisición de Señales y Análisis Inteligente de Datos — LASAID</h3>
-    <p class="inst">Centro Universitario de Ciencias Exactas e Ingenierías, Universidad de Guadalajara</p>
+    <h3>{SITE_CONFIG.fullName} — {SITE_CONFIG.siteName}</h3>
+    <p class="inst">{SITE_CONFIG.institution}</p>
+
+    <div class="address-card" aria-label="Dirección completa de LASAID">
+      <p class="address-label">Dirección e instalaciones:</p>
+      <p>{LAB_LOCATION.street}</p>
+      <p><strong>{LAB_LOCATION.building}</strong></p>
+      <p>{LAB_LOCATION.institution}</p>
+    </div>
+
     <ul class="details-list">
-      <li><strong>Ubicación:</strong> Edificio M, planta alta, oficina 205</li>
-      <li><strong>Responsable:</strong> Dr. Israel Román Godínez — <a href="mailto:israel.roman@academicos.udg.mx">israel.roman@academicos.udg.mx</a></li>
-      <li><strong>Investigadora:</strong> Dra. Sulema Torres Ramos — <a href="mailto:sulema.torres@academicos.udg.mx">sulema.torres@academicos.udg.mx</a></li>
-      <li><strong>Teléfono:</strong> +52 (33) 1378 5900, ext. 27791</li>
+      <li>
+        <strong>Responsable:</strong> {LAB_LOCATION.responsible.name} —{' '}
+        <a href={`mailto:${LAB_LOCATION.responsible.email}`}>{LAB_LOCATION.responsible.email}</a>
+      </li>
+      <li>
+        <strong>Investigadora:</strong> {LAB_LOCATION.researcher.name} —{' '}
+        <a href={`mailto:${LAB_LOCATION.researcher.email}`}>{LAB_LOCATION.researcher.email}</a>
+      </li>
+      <li><strong>Teléfono:</strong> {LAB_LOCATION.phone}</li>
     </ul>
   </div>
+
   <div class="map-box">
     <h4>Ubicación en Campus CUCEI</h4>
-    <p>Edificio M, planta alta, oficina 205. Blvd. Gral. Marcelino García Barragán 1421, Olímpica, Guadalajara, Jalisco.</p>
-    {validMap ? (
-      <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="map-btn">Ver mapa de ubicación ↗</a>
-    ) : (
-      <Placeholder />
-    )}
+    <div class="map-address">
+      <p>{LAB_LOCATION.street}</p>
+      <p><strong>{LAB_LOCATION.building}</strong></p>
+      <p>{LAB_LOCATION.institution}</p>
+    </div>
+    <div class="map-status">
+      <strong>Mapa de ubicación:</strong>{' '}
+      {validMap ? (
+        <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="map-btn">Ver mapa de ubicación ↗</a>
+      ) : (
+        <Placeholder/>
+      )}
+    </div>
   </div>
 </div>
 
@@ -37,6 +60,19 @@ const validMap = mapUrl && !mapUrl.toUpperCase().includes('PENDIENTE');
   }
   h3 { font-size: 1.18rem; color: #0f172a; margin-bottom: 0.25rem; }
   .inst { color: #0369a1; font-weight: 600; font-size: 0.95rem; margin-bottom: 1rem; }
+  .address-card {
+    background: #f8fafc;
+    border-left: 4px solid #0284c7;
+    padding: 0.85rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .address-label { font-weight: 700; color: #0f172a; margin-bottom: 0.15rem; }
   .details-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.92rem; color: #334155; }
   .details-list a { color: #0284c7; text-decoration: none; font-weight: 600; }
   .details-list a:hover { text-decoration: underline; }
@@ -48,10 +84,11 @@ const validMap = mapUrl && !mapUrl.toUpperCase().includes('PENDIENTE');
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.6rem;
+    gap: 0.75rem;
   }
   h4 { font-size: 1rem; color: #0f172a; }
-  .map-box p { font-size: 0.88rem; color: #475569; }
+  .map-address { font-size: 0.88rem; color: #334155; display: flex; flex-direction: column; gap: 0.2rem; }
+  .map-status { font-size: 0.88rem; color: #334155; }
   @media (max-width: 768px) {
     .contact-grid { grid-template-columns: 1fr; }
   }

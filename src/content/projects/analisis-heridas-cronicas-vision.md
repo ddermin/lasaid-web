@@ -12,4 +12,5 @@ academicWorks: ["maestria-angela-fernanda-palacios-gaxiola"]
 publications: []
 software: []
 repositories: ["PENDIENTE"]
+featured: false
 ---

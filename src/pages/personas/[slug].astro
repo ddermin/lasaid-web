@@ -51,19 +51,29 @@ const isPending = (v) => !v || String(v).toUpperCase().includes('PENDIENTE');
       <div class="contact-links">
         <p><strong>Correo:</strong> <a href={`mailto:${d.email}`}>{d.email}</a></p>
         <p>
-          <strong>ORCID:</strong> {d.orcid}
-          {!isPending(d.orcidUrl) ? <a href={d.orcidUrl} target="_blank" rel="noopener noreferrer"> (Ver perfil)</a> : <Placeholder />}
+          <strong>ORCID:</strong> {d.orcid}{' '}
+          {!isPending(d.orcidUrl) ? (
+            <a href={d.orcidUrl} target="_blank" rel="noopener noreferrer">(Ver enlace ORCID)</a>
+          ) : (
+            <Placeholder label="URL pendiente" />
+          )}
         </p>
-        {!isPending(d.googleScholar) ? (
-          <p><strong>Google Scholar:</strong> <a href={d.googleScholar} target="_blank" rel="noopener noreferrer">Consultar perfil ↗</a></p>
-        ) : (
-          <Placeholder />
-        )}
-        {!isPending(d.scopus) ? (
-          <p><strong>Scopus:</strong> <a href={d.scopus} target="_blank" rel="noopener noreferrer">Consultar perfil ↗</a></p>
-        ) : (
-          <Placeholder />
-        )}
+        <p>
+          <strong>Google Scholar:</strong>{' '}
+          {!isPending(d.googleScholar) ? (
+            <a href={d.googleScholar} target="_blank" rel="noopener noreferrer">Consultar perfil ↗</a>
+          ) : (
+            <Placeholder />
+          )}
+        </p>
+        <p>
+          <strong>Scopus:</strong>{' '}
+          {!isPending(d.scopus) ? (
+            <a href={d.scopus} target="_blank" rel="noopener noreferrer">Consultar perfil ↗</a>
+          ) : (
+            <Placeholder />
+          )}
+        </p>
       </div>
 
       <div class="areas">
@@ -93,7 +103,12 @@ const isPending = (v) => !v || String(v).toUpperCase().includes('PENDIENTE');
     <SectionHeader title={`Trabajos académicos dirigidos y codirigidos (${relatedWorks.length})`} />
     <div class="grid-2">
       {relatedWorks.map((w) => (
-        <AcademicWorkCard work={w} studentMap={studentMap} projectMap={projectMap} softwareMap={softwareMap} />
+        <AcademicWorkCard
+          work={w}
+          studentMap={studentMap}
+          projectMap={projectMap}
+          softwareMap={softwareMap}
+        />
       ))}
     </div>
   </section>
@@ -113,7 +128,7 @@ const isPending = (v) => !v || String(v).toUpperCase().includes('PENDIENTE');
   .profile-img { width: 200px; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid #cbd5e1; }
   .affiliation { color: #0369a1; font-size: 0.95rem; margin-bottom: 0.75rem; }
   .bio { color: #1e293b; font-size: 0.98rem; margin-bottom: 1rem; }
-  .contact-links { font-size: 0.9rem; color: #334155; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.25rem; }
+  .contact-links { font-size: 0.9rem; color: #334155; display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.25rem; }
   .contact-links a { color: #0284c7; text-decoration: none; font-weight: 600; }
   .areas h3 { font-size: 1rem; margin-bottom: 0.5rem; }
   .area-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }

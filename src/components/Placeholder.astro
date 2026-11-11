@@ -1,18 +1,24 @@
-﻿---
-const MOSTRAR_LEYENDA = false;
-const { label = "" } = Astro.props;
 ---
-{MOSTRAR_LEYENDA && <span class="placeholder-badge" title="Información pendiente de actualización">{label || "Pendiente"}</span>}
+const MOSTRAR_LEYENDA = true;
+const { label = "Información pendiente" } = Astro.props;
+---
+{MOSTRAR_LEYENDA && (
+  <span class="placeholder-badge" title="Dato marcado como PENDIENTE en el Contenido Maestro">
+    {label}
+  </span>
+)}
 
 <style>
   .placeholder-badge {
     display: inline-block;
-    background: #f1f5f9;
+    background: #f8fafc;
     color: #64748b;
     border: 1px dashed #cbd5e1;
     font-size: 0.78rem;
-    padding: 0.1rem 0.45rem;
+    font-weight: 500;
+    padding: 0.1rem 0.5rem;
     border-radius: 4px;
     font-style: italic;
+    line-height: 1.4;
   }
 </style>

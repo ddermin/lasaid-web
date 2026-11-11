@@ -1,10 +1,10 @@
 ---
-title: "Seminario permanente de investigación y formación LASAID"
+title: "PENDIENTE"
 slug: "seminario-formacion-lasaid"
 date: "PENDIENTE"
 type: "training"
-description: "Sesiones de seguimiento académico, revisión de avances de tesis de posgrado y proyectos modulares de licenciatura."
+description: "PENDIENTE"
 image: "/images/activities/activity-default.svg"
-relatedPeople: ["Dr. Israel Román Godínez", "Dra. Sulema Torres Ramos"]
+relatedPeople: ["PENDIENTE"]
 url: "PENDIENTE"
 ---

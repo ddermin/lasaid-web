@@ -12,4 +12,5 @@ academicWorks: ["doctorado-natanael-hernandez-vazquez", "maestria-natanael-herna
 publications: []
 software: []
 repositories: ["PENDIENTE"]
+featured: false
 ---

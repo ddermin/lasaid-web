@@ -12,4 +12,5 @@ academicWorks: ["doctorado-quenira-jaanai-moreno-lara", "maestria-quenira-jaanai
 publications: ["clustering-clinical-notes-spanish-2026"]
 software: ["ner-dd"]
 repositories: ["PENDIENTE"]
+featured: true
 ---
